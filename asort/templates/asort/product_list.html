@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Товары — Nice luk</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="nav">
+                <h1 class="logo">Nice luk</h1>
+                <ul class="menu">
+                    <li><a href="/">🏠 Главная</a></li>
+                    <li><a href="/cart/">🛒 Корзина</a></li>
+                    <li><a href="/about/">🏢 О компании</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="/profile/">👤 Профиль</a></li>
+                        <li style="display: flex; align-items: center;">
+                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="
+                                    background: none;
+                                    border: none;
+                                    font-family: 'Segoe UI', sans-serif;
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    color: #333;
+                                    cursor: pointer;
+                                    padding: 0;
+                                    margin: 0;
+                                ">
+                                    🚪 Выйти
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="/accounts/login/">🔐 Войти</a></li>
+                        <li><a href="/register/">📝 Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
+
+        <h2 class="title">Все товары</h2>
+
+        <!-- Поиск -->
+        <form method="get" action="" class="search-form">
+            <input type="text" name="q" placeholder="Поиск товаров..." value="{{ request.GET.q }}">
+            <button type="submit">🔍 Найти</button>
+        </form>
+
+        <!-- Фильтр -->
+        <form method="get" action="" class="filter-form">
+            <label for="category">Категория:</label>
+            <select name="category" id="category">
+                <option value="">Все категории</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="size">Размер:</label>
+            <select name="size" id="size">
+                <option value="all" {% if selected_size == 'all' or not selected_size %}selected{% endif %}>Все размеры</option>
+                {% for s in sizes %}
+                    <option value="{{ s }}" {% if selected_size == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="min_price">Цена от:</label>
+            <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}">
+
+            <label for="max_price">до:</label>
+            <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}">
+            <span>₽</span>
+
+            <button type="submit">✅ Применить фильтр</button>
+        </form>
+
+        <!-- Карточки товаров -->
+        <ul class="product-list">
+            {% for product in products %}
+                <li class="product-card">
+                    <a href="{% url 'product_detail' product.id %}" class="product-link">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% endif %}
+                        <h3>{{ product.name }}</h3>
+                    </a>
+                    <p>{{ product.description }}</p>
+                    <p>Размер: {{ product.size|default:"—" }}</p>
+                    <p><strong>{{ product.price }} ₽</strong></p>
+                    <a href="{% url 'add_to_cart' product.id %}" class="button">➕ В корзину</a>
+                </li>
+            {% empty %}
+                <li>Товары не найдены.</li>
+            {% endfor %}
+        </ul>
+
+        <div class="go-to-cart">
+            <a href="/cart/" class="button">🛒 Перейти в корзину</a>
+        </div>
+
+        {% include 'asort/footer.html' %}
+    </div>
+</body>
+</html>

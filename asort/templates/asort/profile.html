@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — Nice luk</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="nav">
+            <h1 class="logo">Nice luk</h1>
+            <ul class="menu">
+                <li><a href="/">🏠 Главная</a></li>
+                <li><a href="/cart/">🛒 Корзина</a></li>
+                <li><a href="/about/">🏢 О компании</a></li>
+                <li><a href="/profile/">👤 Профиль</a></li>
+                <li style="display: flex; align-items: center;">
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="
+                            background: none;
+                            border: none;
+                            font-family: 'Segoe UI', sans-serif;
+                            font-size: 16px;
+                            font-weight: 500;
+                            color: #333;
+                            cursor: pointer;
+                            padding: 0;
+                            margin: 0;
+                        ">
+                            🚪 Выйти
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <h2 class="title">👤 Личный кабинет</h2>
+
+    <h3>📄 Личные данные</h3>
+    <form method="post" style="max-width: 400px; margin-bottom: 30px;">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <button type="submit" class="button">💾 Сохранить</button>
+    </form>
+
+    <hr>
+
+    {% if orders %}
+        <h3>🧾 История заказов</h3>
+        <ul style="padding-left: 20px;">
+            {% for order in orders %}
+                <li style="margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+                    <strong>📅 Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}<br>
+                    <strong>🛍 Товары:</strong>
+                    <ul>
+                        {% for item in order.items.all %}
+                            <li>{{ item.product.name }} — {{ item.quantity }} шт.</li>
+                        {% endfor %}
+                    </ul>
+                    <strong>💰 Сумма:</strong> {{ order.total_price }} ₽<br>
+                    {% if order.delivery_method == 'pickup' %}
+                        <strong>🏪 Пункт самовывоза:</strong> г. Москва, ул. Генерала Белобородова, д. 21, корп. 3<br>
+                    {% else %}
+                        <strong>📍 Адрес:</strong> {{ order.address }}<br>
+                    {% endif %}
+                    <strong>📞 Телефон:</strong> {{ order.phone }}<br>
+                    <strong>🚚 Доставка:</strong> {{ order.get_delivery_method_display }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <form action="{% url 'clear_order_history' %}" method="post" onsubmit="return confirm('Удалить все заказы?');">
+            {% csrf_token %}
+            <button type="submit" class="btn danger">🗑 Очистить историю заказов</button>
+        </form>
+    {% else %}
+        <p>❌ У вас пока нет заказов.</p>
+    {% endif %}
+
+    <a href="/" class="button" style="margin-top: 30px;">⬅ На главную</a>
+
+    {% include 'asort/footer.html' %}
+</div>
+</body>
+</html>

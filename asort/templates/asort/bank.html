@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SecurePay — Оплата</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f0fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bank-header {
+            background-color: #5e3ea1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .bank-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .bank-header .subtitle {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #d1c4f2;
+        }
+
+        .payment-container {
+            max-width: 400px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .payment-container h2 {
+            text-align: center;
+            color: #5e3ea1;
+            margin-bottom: 20px;
+        }
+
+        .payment-container p {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #6b43c2;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #5e3ea1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bank-header">
+        <h1>SecurePay</h1>
+        <div class="subtitle">🔒 Защищённая платёжная система</div>
+    </div>
+
+    <div class="payment-container">
+        <h2>Оплата заказа</h2>
+        <p>Сумма к оплате: <strong>{{ total_price }} ₽</strong></p>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="card_number">Номер карты:</label>
+            <input type="text" id="card_number" name="card_number" maxlength="19" required>
+
+            <label for="expiry">Срок действия (MM/YY):</label>
+            <input type="text" id="expiry" name="expiry" maxlength="5" required>
+
+            <label for="cvc">CVC:</label>
+            <input type="text" id="cvc" name="cvc" maxlength="3" required>
+
+            <button type="submit">✅ Оплатить</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('card_number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+            value = value.replace(/(.{4})/g, '$1 ').trim();
+            e.target.value = value;
+        });
+
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0, 4);
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2);
+            }
+            e.target.value = value;
+        });
+    </script>
+
+</body>
+</html>

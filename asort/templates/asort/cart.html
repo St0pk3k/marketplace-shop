@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина — Nice luk</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="nav">
+                <h1 class="logo">Nice luk</h1>
+                <ul class="menu">
+                    <li><a href="/">🏠 Главная</a></li>
+                    <li><a href="/cart/">🛒 Корзина</a></li>
+                    <li><a href="/about/">🏢 О компании</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="/profile/">👤 Профиль</a></li>
+                        <li style="display: flex; align-items: center;">
+                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="
+                                    background: none;
+                                    border: none;
+                                    font-family: 'Segoe UI', sans-serif;
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    color: #333;
+                                    cursor: pointer;
+                                    padding: 0;
+                                    margin: 0;
+                                ">
+                                    🚪 Выйти
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="/accounts/login/">🔐 Войти</a></li>
+                        <li><a href="/register/">📝 Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
+
+        <h2 class="title">🛒 Ваша корзина</h2>
+
+        {% if cart_items %}
+            <ul>
+                {% for item in cart_items %}
+                    <li style="margin-bottom: 16px;">
+                        <strong>{{ item.product.name }}</strong><br>
+                        Цена: {{ item.product.price }} руб. × {{ item.quantity }} = <strong>{{ item.subtotal }} руб.</strong>
+                        <div class="cart-actions" style="display: inline-flex; gap: 8px; margin-top: 6px;">
+                            <a href="{% url 'decrease_quantity' item.product.id %}" class="btn">−</a>
+                            <a href="{% url 'increase_quantity' item.product.id %}" class="btn">+</a>
+                            <a href="{% url 'remove_from_cart' item.product.id %}" class="btn danger">Удалить</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <p class="total">Итоговая стоимость: {{ total_price }} руб.</p>
+            <a href="{% url 'checkout' %}" class="button">✔ Оформить заказ</a>
+        {% else %}
+            <p>Ваша корзина пуста.</p>
+        {% endif %}
+
+        <div class="go-to-cart">
+            <a href="{% url 'product_list' %}" class="button">← Вернуться к товарам</a>
+        </div>
+
+        {% include 'asort/footer.html' %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа — Nice luk</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="nav">
+            <h1 class="logo">Nice luk</h1>
+            <ul class="menu">
+                <li><a href="/">🏠 Главная</a></li>
+                <li><a href="/cart/">🛒 Корзина</a></li>
+                <li><a href="/about/">🏢 О компании</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/profile/">👤 Профиль</a></li>
+                    <li style="display: flex; align-items: center;">
+                        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="
+                                background: none;
+                                border: none;
+                                font-family: 'Segoe UI', sans-serif;
+                                font-size: 16px;
+                                font-weight: 500;
+                                color: #333;
+                                cursor: pointer;
+                                padding: 0;
+                                margin: 0;
+                            ">
+                                🚪 Выйти
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="/accounts/login/">🔐 Войти</a></li>
+                    <li><a href="/register/">📝 Регистрация</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    <h2 class="title">📦 Оформление заказа</h2>
+
+    <form method="post" style="max-width: 400px;">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        <div class="form-group">
+            {{ form.address.label_tag }}
+            {{ form.address }}
+        </div>
+        <div class="form-group">
+            {{ form.phone.label_tag }}
+            {{ form.phone }}
+        </div>
+        <div class="form-group">
+            <label>Способ доставки:</label>
+            {{ form.delivery_method }}
+        </div>
+
+        <button type="submit" class="button">✅ Перейти к оплате</button>
+    </form>
+
+    <a href="/" class="button" style="margin-top: 20px;">⬅ Назад на главную</a>
+
+    {% include 'asort/footer.html' %}
+</div>
+</body>
+</html>

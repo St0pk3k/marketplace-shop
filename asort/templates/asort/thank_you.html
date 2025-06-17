@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спасибо за заказ — Nice luk</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="nav">
+            <h1 class="logo">Nice luk</h1>
+            <ul class="menu">
+                <li><a href="/">🏠 Главная</a></li>
+                <li><a href="/cart/">🛒 Корзина</a></li>
+                <li><a href="/about/">🏢 О компании</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/profile/">👤 Профиль</a></li>
+                    <li style="display: flex; align-items: center;">
+                        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="
+                                background: none;
+                                border: none;
+                                font-family: 'Segoe UI', sans-serif;
+                                font-size: 16px;
+                                font-weight: 500;
+                                color: #333;
+                                cursor: pointer;
+                                padding: 0;
+                                margin: 0;
+                            ">
+                                🚪 Выйти
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="/accounts/login/">🔐 Войти</a></li>
+                    <li><a href="/register/">📝 Регистрация</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    <h2 class="title">🎉 Спасибо за заказ!</h2>
+
+    <p>Ваш заказ успешно оформлен. Мы свяжемся с вами в ближайшее время для подтверждения.</p>
+
+    <a href="/" class="button" style="margin-top: 20px;">⬅ Вернуться на главную</a>
+
+    {% include 'asort/footer.html' %}
+</div>
+</body>
+</html>

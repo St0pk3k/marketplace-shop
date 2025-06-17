@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация — Nice luk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="container">
+
+    <header class="header">
+        <div class="nav">
+            <h1 class="logo">Nice luk</h1>
+            <ul class="menu">
+                <li><a href="/">🏠 Главная</a></li>
+                <li><a href="/about/">🏢 О компании</a></li>
+                <li><a href="/accounts/login/">🔐 Войти</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <h2 class="title">📝 Регистрация</h2>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="id_username">Логин:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error">{{ form.username.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password1">Пароль:</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="error">{{ form.password1.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_password2">Подтвердите пароль:</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="error">{{ form.password2.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_full_name">Имя:</label>
+            {{ form.full_name }}
+            {% if form.full_name.errors %}
+                <div class="error">{{ form.full_name.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_address">Адрес:</label>
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="error">{{ form.address.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone">Телефон:</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+                <div class="error">{{ form.phone.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="button">✅ Зарегистрироваться</button>
+    </form>
+
+    <a href="/accounts/login/" class="button" style="margin-top: 20px;">🔐 Уже есть аккаунт? Войти</a>
+
+    {% include 'asort/footer.html' %}
+</div>
+</body>
+</html>
