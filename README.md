@@ -21,6 +21,6 @@ SQLite
 Скриншоты:
 Главная страница(каталог товаров):
 ![image](https://github.com/user-attachments/assets/9329430d-0bd4-4d0e-ba60-6cd3d593906a) 
-Корзина:
+Страница регистрации:
 ![image](https://github.com/user-attachments/assets/f8ad6114-1766-4c69-b7a4-bb47a41c49f3)
 
